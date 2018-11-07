@@ -31,7 +31,7 @@ class Bbcon:
             self.active_behaviors.append(behavior)
 
     # Fjerner aktive behaviors fra active-behaviors listen
-    def deactive_behavior(self, behavior):
+    def deactivate_behavior(self, behavior):
         if behavior in self.active_behaviors:
             self.active_behaviors.remove(behavior)
 
