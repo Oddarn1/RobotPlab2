@@ -1,6 +1,6 @@
 from arbitrator import Arbitrator
 from time import sleep
-from motorob import Motob
+from motob import Motob
 from behavior import Photo
 
 class Bbcon:
