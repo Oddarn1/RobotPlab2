@@ -54,7 +54,7 @@ class Obstruction(Behavior):
         val=self.u_sensob.get_value()
         print(val)
         if val < 10:
-            self.bbcon.activate_behavior(self)
+            self.bbcon.activate_bahavior(self)
             self.active_flag = True
             self.halt_request = True
 
@@ -107,7 +107,7 @@ class DriveForward(Behavior):
 
     def consider_activation(self):
         if self.active_flag:
-            self.bbcon.activate_behavior(self)
+            self.bbcon.activate_bahavior(self)
 
     def consider_deactivation(self):
         return
@@ -140,7 +140,7 @@ class FollowLine(Behavior):
 
         for value in self.r_sensob.update():
             if value < self.treshold:
-                self.bbcon.activate_behavior(self)
+                self.bbcon.activate_bahavior(self)
                 self.active_flag = True
                 return
 
@@ -162,12 +162,20 @@ class FollowLine(Behavior):
 
         self.r_sensob.update()
 
-        if self.r_sensob.get_value()[1] < self.treshold:
-            self.motor_recommendations = ["fl"]
+        if self.r_sensob.get_value()[0] < self.treshold:
+            self.motor_recommendations = ["l",30]
+            self.match_degree = 0.8
+
+        elif self.r_sensob.get_value()[5] < self.treshold:
+            self.motor_recommendations = ["r",30]
+            self.match_degree = 0.8
+
+        elif self.r_sensob.get_value()[1] < self.treshold:
+            self.motor_recommendations = ["l", 15]
             self.match_degree = 0.8
 
         elif self.r_sensob.get_value()[4] < self.treshold:
-            self.motor_recommendations = ["fr"]
+            self.motor_recommendations = ["r",15]
             self.match_degree = 0.8
 
         else:
@@ -187,7 +195,7 @@ class Photo(Behavior):
     def consider_activation(self):
 
         if self.bbcon.can_take_photo:
-            self.bbcon.activate_behavior(self)
+            self.bbcon.activate_bahavior(self)
             self.halt_request = True
             self.active_flag = True
 
