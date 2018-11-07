@@ -56,7 +56,7 @@ class Obstruction(Behavior):
         val = self.u_sensob.get_value()
         print(val)
         if val > 10:
-            self.bbcon.deactive_behavior(self)
+            self.bbcon.deactivate_behavior(self)
             self.active_flag = False
             self.halt_request = False
 
@@ -133,7 +133,7 @@ class FollowLine(Behavior):
 
         # Deaktiverer behavior
         self.weight = 0
-        self.bbcon.deactive_behavior(self)
+        self.bbcon.deactivate_behavior(self)
         self.active_flag = False
 
     def consider_deactivation(self):
@@ -189,7 +189,7 @@ class Photo(Behavior):
     def consider_deactivation(self):
 
         if not self.bbcon.can_take_photo:
-            self.bbcon.deactive_behavior(self)
+            self.bbcon.deactivate_behavior(self)
             self.halt_request = False
             self.active_flag = False
 
