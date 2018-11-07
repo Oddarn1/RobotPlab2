@@ -12,10 +12,10 @@ class Motob:
         self.photograph = False
         self.camera=CameraSensob()
 
-    def update(self, motor_recommandation):
+    def update(self, motor_recommendation):
         # Mottar en anbefaling fra bbcon og behaviors
 
-        self.values = motor_recommandation
+        self.values = motor_recommendation
         self.operationlize()
 
     def operationlize(self):
@@ -23,7 +23,7 @@ class Motob:
         # 'l' eller 'r'
 
         value=self.values[0]
-        print("Motor Recommandation = ", value)
+        print("Motor Recommendation = ", value)
         if value == "f":
             print("Forward")
             self.motor.set_value([0.5, 0.5],0.15)
