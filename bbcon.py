@@ -38,7 +38,7 @@ class Bbcon:
     # Resetter hvis foto er tatt
     def photo_taken(self):
         self.can_take_photo = False
-        self.motobs.can_take_photo = False
+        self.motobs.photograph = False
 
     # "loopen" til klassen
     def run_one_timestep(self):
@@ -54,7 +54,7 @@ class Bbcon:
         # Oppdaterer motobs
         self.motobs.update(motor_recoms)
 
-        if self.motobs.can_take_photo:
+        if self.motobs.photograph:
             self.can_take_photo = True
 
         # vent slik at motorene kan gjøre tingen sin
