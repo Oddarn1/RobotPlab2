@@ -58,10 +58,12 @@ class Bbcon:
             self.can_take_photo = True
 
         # vent slik at motorene kan gjøre tingen sin
-        sleep(0.5)
+        sleep(0.15)
 
         # Reset sensorverdiene
         for sensor in self.sensobs:
             sensor.reset()
+            
+        self.active_behaviors=[]
 
         self.num_timesteps += 1
