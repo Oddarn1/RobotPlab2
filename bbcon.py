@@ -6,65 +6,61 @@ from behavior import Photo
 class Bbcon:
 
     def __init__(self):
-        self.behaviors = []                     # a list of all the behavior objects used by the bbcon
-        self.active_behaviors = []              # a list of all behaviors that are currently active.
-        self.sensobs = []                       # a list of all sensory objects used by the bbcon
-        self.motobs = Motob(self)               # a list of all motor objects used by the bbcon
-        self.arbitrator = Arbitrator()          # the arbitrator object that will resolve actuator requests produced by the behaviors.
-        self.num_timesteps = 0                  # number of timesteps done
+        self.behaviors = []                     # behavior-listen, med både inaktive og aktive behaviors
+        self.active_behaviors = []              # liste med aktive behaviors
+        self.sensobs = []                       # liste med sensor-objekter
+        self.motobs = Motob(self)               # list med motor-objekter
+        self.arbitrator = Arbitrator()          # arbitrator-objektet, velger winning-behavior
+        self.num_timesteps = 0                  # antall timesteps som er kjørt
         self.can_take_photo = False
 
 
-    # append a newly-created behavior onto the behaviors list.
+    # Legger til behavior i listen
     def add_behavior(self, behavior):
-
         if behavior not in self.behaviors:
             self.behaviors.append(behavior)
 
-    # append a newly-created sensob onto the sensobs list.
+    # Legger til sensor-objekt i listen
     def add_sensor(self, sensor):
         if sensor not in self.sensobs:
             self.sensobs.append(sensor)
 
-    # add an existing behavior onto the active-behaviors list.
-    def activate_bahavior(self, behavior):
+    # Legger til behavior i listen over active-behaviors
+    def activate_behavior(self, behavior):
         if behavior in self.behaviors:
             self.active_behaviors.append(behavior)
 
-    # remove an existing behavior from the active behaviors list.
+    # Fjerner aktive behaviors fra active-behaviors listen
     def deactive_behavior(self, behavior):
         if behavior in self.active_behaviors:
             self.active_behaviors.remove(behavior)
 
+    # Resetter hvis foto er tatt
     def photo_taken(self):
         self.can_take_photo = False
         self.motobs.can_take_photo = False
 
-    # Constitutes the core BBCON activity
+    # "loopen" til klassen
     def run_one_timestep(self):
-        """
-        Main function.
-        :return:
-        """
-        
-        # Updates behaviours which in return updates sensobs.
+
+        # Oppdaterer behaviors
         for behaviour in self.behaviors:
             behaviour.update()
 
-        # Returns recommondations of
+        # Henter ut motor-recommendations
         print("Active behaviors", self.active_behaviors)
         motor_recoms = self.arbitrator.choose_action(self.active_behaviors)
 
-        # Update motobs
+        # Oppdaterer motobs
         self.motobs.update(motor_recoms)
 
         if self.motobs.can_take_photo:
             self.can_take_photo = True
 
-        # Waits for motors to run
+        # vent slik at motorene kan gjøre tingen sin
         sleep(0.5)
 
-        # Reset sensor values
+        # Reset sensorverdiene
         for sensor in self.sensobs:
             sensor.reset()
 

@@ -1,34 +1,26 @@
-from behavior import Behavior
-
-
 class Arbitrator:
-    """
-    Bestemmer hvilken av behavior som vinner og får sin motor recommandation valgt
 
-    """
+    # Denne klassen velger en winning-behavior som returneres.
 
     def choose_action(self, behaviors):
         winning_behavior = None
         max_weight = -1
 
-        # Choosing a "winning" behavior and returns that behavors motor recommendations and halt flag
         for behavior in behaviors:
 
-            # if a behavior has a halt request -> abort and report back to Bbcon
+            # Hvis behavioren skal stoppe returnerer vi umiddelbart denne
             if behavior.halt_request:
-                print(behavior.name, "won!")
+                print(behavior.name, " will be recommended")
                 return behavior.motor_recommendations
 
-            # Choose a winning behavior
+            # Hvis den ikke skal stoppe velger behavior med høyest weight
             elif behavior.weight > max_weight:
                 max_weight = behavior.weight
                 winning_behavior = behavior
 
-
-        # Winning behaviors motor recommendations gets sent back to Bbcon
-
+        # Kjører bare fremover hvis ingen behavior ble funnet,
         if winning_behavior is None:
-            print("Winning behavior is None. Driving forward!")
+            print("Found no behavior, driving forwards")
             return ["f"]
-        print(winning_behavior.name, "won!")
+        print(winning_behavior.name, " will be recommended")
         return winning_behavior.motor_recommendations
