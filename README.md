@@ -1,2 +1,2 @@
-# Bahavior-Based-Robot
-Øving 6 i PLAB2
+# Zumorobot
+Prosjekt 6 TDT4113
