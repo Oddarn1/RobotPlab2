@@ -47,7 +47,7 @@ class Obstruction(Behavior):
         val=self.u_sensob.get_value()
         print(val)
         if val < 10:
-            self.bbcon.activate_bahavior(self)
+            self.bbcon.activate_behavior(self)
             self.active_flag = True
             self.halt_request = True
 
@@ -97,7 +97,7 @@ class DriveForward(Behavior):
 
     def consider_activation(self):
         if self.active_flag:
-            self.bbcon.activate_bahavior(self)
+            self.bbcon.activate_behavior(self)
 
     def consider_deactivation(self):
         return
@@ -127,7 +127,7 @@ class FollowLine(Behavior):
 
         for value in self.r_sensob.update():
             if value < self.treshold:
-                self.bbcon.activate_bahavior(self)
+                self.bbcon.activate_behavior(self)
                 self.active_flag = True
                 return
 
@@ -182,7 +182,7 @@ class Photo(Behavior):
     def consider_activation(self):
 
         if self.bbcon.can_take_photo:
-            self.bbcon.activate_bahavior(self)
+            self.bbcon.activate_behavior(self)
             self.halt_request = True
             self.active_flag = True
 
