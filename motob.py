@@ -43,6 +43,7 @@ class Motob:
             self.motor.set_value([-0.5, 0.5], 0.25)
             self.motor.set_value([0.5, -0.5], 0.25)
             print("Found red!")
+            self.motor.set_value([-1, 1], self.turn_n_degrees(180))
             self.bbcon.photo_taken()
         elif value == "s":
             print("Stop")
