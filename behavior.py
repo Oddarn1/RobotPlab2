@@ -7,49 +7,42 @@ class Behavior:
 
     def __init__(self, bbcon):
 
-        self.bbcon = bbcon                                      # pointer to the controller that uses this behavior.
-        self.sensobs = []                                       # a list of all sensobs that this behavior uses.
-        self.motor_recommendations = ["none"]                   # a list of recommendations, one per motob, that this behavior provides to the arbitrator.
-        self.active_flag = False                                # boolean variable indicating that the behavior is currently active or inactive.
-        self.halt_request = False                               # behaviors can request the robot to completely halt activity (and thus end the run).
-        self.priority = 0                                       # a static, pre-defined value indicating the importance of this behavior.
-        self.match_degree = 0                                   # a real number in the range [0, 1] indicating the degree to which current conditions warrant the performance of this behavior.
-        self.weight = self.match_degree * self.priority         # weight - the product of the priority and the match degree, which the arbitrator uses as the basis for selecting the winning behavior for a timestep.
+        self.bbcon = bbcon                                      # bbcon-controlleren hvor behavioren benyttes
+        self.sensobs = []                                       # sensobs-objektene som benyttes
+        self.motor_recommendations = ["none"]                   # motor-recommendation som skal sendes til Arbitrator
+        self.active_flag = False                                # er behavior aktiv?
+        self.halt_request = False                               # sender melding om at behavior skal stoppe.
+        self.priority = 0                                       # prioriteten til behavior
+        self.match_degree = 0                                   # Enten 0 eller 1. Brukes i samsvar med weight og priority.
+        self.weight = self.match_degree * self.priority         # vektingen til behavioren når den benyttes av Arbitrator.
         self.name = ""
 
-    @abstractclassmethod
+    # Tester om behavioren skal deaktiveres
     def consider_deactivation(self):
-        # whenever a behavior is active, it should test whether it should deactivate.
-        return
+        pass
 
-    @abstractclassmethod
+    # Tester om behavioren skal aktiveres
     def consider_activation(self):
-        # whenever a behavior is inactive, it should test whether it should activate.
-        return
+        pass
 
-    @abstractclassmethod
+    # Funksjon som kjøres for å oppdatere behavior
     def update(self):
-        # Update the activity status
-        # Call sense and act
-        # Update the behavior’s weight
-        return
+        pass
 
-    @abstractclassmethod
     def sense_and_act(self):
-        return
+        pass
 
 
-# stops the robot if the ultrasonic sensor detects something closer than 10cm
+# stopper roboten hvis sensoren detekterer et objekt
 class Obstruction(Behavior):
 
-    # add sensob to behavior
     def __init__(self, bbcon):
         super(Obstruction,self).__init__(bbcon)
         self.name = "Obstruction"
         self.u_sensob = UltrasonicSensob()
         self.sensobs.append(self.u_sensob)
 
-    # activate behavior if obstruction is closer than 10cm
+    # aktiver behavior hvis sensoren ser noe nærmere enn 10 centimeter
     def consider_activation(self):
         val=self.u_sensob.get_value()
         print(val)
@@ -58,7 +51,7 @@ class Obstruction(Behavior):
             self.active_flag = True
             self.halt_request = True
 
-    # deactive behavior if obstruction is further than 10cm
+    # DEaktiver behavior hvis sensoren IKKE ser noe nærmere enn 10 centimeter
     def consider_deactivation(self):
         val = self.u_sensob.get_value()
         print(val)
@@ -67,21 +60,17 @@ class Obstruction(Behavior):
             self.active_flag = False
             self.halt_request = False
 
-    # update behavior
     def update(self):
 
         for sensor in self.sensobs:
             sensor.update()
 
-        # if active, check if behavior should be deactivated
         if self.active_flag:
             self.consider_deactivation()
-
-        # if deactivated, check if behavior should be activated
-        elif not self.active_flag:
+        else:
             self.consider_activation()
 
-        # set weight = 0 if deactivated
+        # set vekting = 0 hvis ikke aktiv
         if not self.active_flag:
             self.weight = 0
             return
@@ -95,8 +84,9 @@ class Obstruction(Behavior):
         self.match_degree = 1
 
         
-# simple class for driving forward
+# Kjører bare fremover
 class DriveForward(Behavior):
+
     def __init__(self, bbcon):
         super(DriveForward, self).__init__(bbcon)
         self.name = "DriveForward"
@@ -114,9 +104,6 @@ class DriveForward(Behavior):
 
     def update(self):
         self.r_sensob.update()
-        #print("ReflectanceSensob:\n")
-        #print(self.r_sensob.get_value())
-        #print("\n")
         self.consider_activation()
         self.sense_and_act()
         self.weight = self.priority * self.match_degree
@@ -144,7 +131,7 @@ class FollowLine(Behavior):
                 self.active_flag = True
                 return
 
-        # deactivating
+        # Deaktiverer behavior
         self.weight = 0
         self.bbcon.deactive_behavior(self)
         self.active_flag = False
@@ -210,7 +197,6 @@ class Photo(Behavior):
 
         if self.active_flag:
             self.consider_deactivation()
-
         else:
             self.consider_activation()
 
